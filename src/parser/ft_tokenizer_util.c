@@ -6,11 +6,11 @@
 /*   By: kshim <kshim@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/15 13:51:56 by kshim             #+#    #+#             */
-/*   Updated: 2022/12/23 12:51:28 by kshim            ###   ########.fr       */
+/*   Updated: 2023/01/11 19:17:14 by kshim            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/ft_tokenizer.h"
+#include "../../include/ft_minishell.h"
 
 int	ft_is_quote(char cha)
 {
@@ -36,7 +36,8 @@ int	ft_is_operator(char cha)
 	return (BOOL_FALSE);
 }
 
-void	ft_free_tokenizer_list_and_token(t_list **token_list, t_tkn **token, int procedure)
+void	ft_free_tokenizer_list_and_token(\
+	t_list **token_list, t_tkn **token, int procedure)
 {
 	if (*token_list != 0)
 		ft_lstclear(token_list, &ft_free_a_token_list_content);
@@ -45,21 +46,19 @@ void	ft_free_tokenizer_list_and_token(t_list **token_list, t_tkn **token, int pr
 		if (*token != 0)
 			ft_free_a_token_list_content((void *)*token);
 	}
+	*token_list = 0;
 	return ;
 }
 
 void	ft_free_a_token_list_content(void *target)
 {
-	t_tkn *token;
+	t_tkn	*token;
 
 	token = (t_tkn *)target;
 	if (token == 0)
 		return ;
-	if (token->type != TKN_NULL)
-	{
-		free(token->str);
-		token->str = 0;
-	}
+	free(token->str);
+	token->str = 0;
 	token->type = 0;
 	free(token);
 	token = 0;

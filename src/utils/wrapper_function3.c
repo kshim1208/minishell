@@ -1,31 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcmp.c                                        :+:      :+:    :+:   */
+/*   wrapper_function3.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kshim <kshim@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/06/24 16:45:20 by kshim             #+#    #+#             */
-/*   Updated: 2022/06/24 16:47:15 by kshim            ###   ########.fr       */
+/*   Created: 2022/12/22 12:15:08 by mikim3            #+#    #+#             */
+/*   Updated: 2023/01/09 09:30:47 by kshim            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stddef.h>
+#include "../../include/ft_minishell.h"
 
-int	ft_strcmp(const char *s1, const char *s2)
+void	ft_char_free(char *str)
 {
-	const unsigned char	*s1_uc;
-	const unsigned char	*s2_uc;
-	size_t				i;
-
-	s1_uc = (const unsigned char *)s1;
-	s2_uc = (const unsigned char *)s2;
-	i = 0;
-	while (s1_uc[i] && s2_uc[i] && s1[i] != '\0' && s2[i] != '\0')
+	if (str)
 	{
-		if (s1_uc[i] != s2_uc[i])
-			break ;
-		i++;
+		free(str);
 	}
-	return ((int)(s1_uc[i] - s2_uc[i]));
+	else
+		return ;
+}
+
+char	*ft_getenv(char *path_name)
+{
+	char	*output;
+
+	output = getenv(path_name);
+	if (output == NULL)
+		exitcode_with_err("getenv()", strerror(errno), 1);
+	return (output);
 }

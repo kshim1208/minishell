@@ -6,12 +6,11 @@
 /*   By: kshim <kshim@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/15 13:49:46 by kshim             #+#    #+#             */
-/*   Updated: 2022/12/23 12:40:20 by kshim            ###   ########.fr       */
+/*   Updated: 2023/01/11 16:07:19 by kshim            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/ft_tokenizer.h"
-#include "../libft/libft.h"
+#include "../../include/ft_minishell.h"
 
 int	ft_token_processor(
 		t_tknizer *tknizer, int *prev_type)
@@ -23,19 +22,19 @@ int	ft_token_processor(
 			return (FT_ERROR);
 		tknizer->tkn = ft_new_token();
 		if (tknizer->tkn == 0)
-			return (FT_ERROR);
+			return (exitcode_with_err("malloc", \
+				strerror(errno), 140), FT_ERROR);
+		ft_token_start_set(tknizer);
 	}
 	if (*(tknizer->str_pos) == '\0')
 	{
-		tknizer->tkn->str = 0;
-		tknizer->tkn->type = TKN_NULL;
-		if (ft_token_cut(&(tknizer->tkn_list), tknizer->tkn) == FT_ERROR)
+		ft_memset((tknizer->tkn), 0, sizeof(t_tkn));
+		tknizer->tkn->str = ft_strdup("newline");
+		if (tknizer->tkn->str == 0 \
+			|| ft_token_cut(&(tknizer->tkn_list), tknizer->tkn) == FT_ERROR)
 			return (FT_ERROR);
-		tknizer->tkn = 0;
-		tknizer->tkn_len = 0;
 		return (FT_SUCCESS);
 	}
-	ft_token_start_set(tknizer);
 	if (ft_is_operator(*(tknizer->str_pos)) == BOOL_TRUE)
 		*prev_type = TKN_OPERATOR;
 	else
@@ -49,7 +48,7 @@ int	ft_token_set(t_tknizer *tknizer, int type)
 
 	new_str = ft_strndup(tknizer->tkn_start, tknizer->tkn_len);
 	if (new_str == 0)
-		return (FT_ERROR);
+		return (exitcode_with_err("malloc", strerror(errno), 140), FT_ERROR);
 	tknizer->tkn->str = new_str;
 	if (type == TKN_OPERATOR)
 	{
@@ -62,6 +61,10 @@ int	ft_token_set(t_tknizer *tknizer, int type)
 	}
 	else
 		tknizer->tkn->type = type;
+	if (tknizer->expandable == BOOL_TRUE)
+	{
+		tknizer->tkn->expandable = BOOL_TRUE;
+	}
 	return (FT_SUCCESS);
 }
 
@@ -71,7 +74,7 @@ int	ft_token_cut(t_list **token_list, t_tkn *token)
 
 	new_node = ft_calloc(1, sizeof(t_list));
 	if (new_node == 0)
-		return (FT_ERROR);
+		return (exitcode_with_err("malloc", strerror(errno), 140), FT_ERROR);
 	new_node->content = (void *)token;
 	ft_lstadd_back(token_list, new_node);
 	return (FT_SUCCESS);
@@ -89,20 +92,12 @@ t_tkn	*ft_new_token(void)
 
 void	ft_token_start_set(t_tknizer *tknizer)
 {
-	int	i;
-
-	i = 0;
-	while (ft_isspace(*(tknizer->str_pos)) == BOOL_TRUE)
-	{
-		tknizer->str_pos++;
-		i++;
-	}
 	tknizer->tkn_start = tknizer->str_pos;
 	tknizer->tkn_len = 0;
 	tknizer->oper_len = 0;
-	if (i != 0 && ft_isdigit(*(tknizer->str_pos)) == BOOL_TRUE)
+	if (ft_isdigit(*(tknizer->str_pos)) == BOOL_TRUE)
 		tknizer->io_num_mode = BOOL_TRUE;
-	else if (i == 0 && *(tknizer->str_pos - 1) == '|'
+	else if (*(tknizer->str_pos - 1) == '|'
 		&& ft_isdigit(*(tknizer->str_pos)) == BOOL_TRUE)
 		tknizer->io_num_mode = BOOL_TRUE;
 	else

@@ -1,30 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mikim3 <mikim3@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/14 13:14:50 by kshim             #+#    #+#             */
-/*   Updated: 2022/12/29 21:13:40 by mikim3           ###   ########.fr       */
+/*   Created: 2022/12/22 12:14:33 by mikim3            #+#    #+#             */
+/*   Updated: 2022/12/30 14:59:07 by mikim3           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../../include/ft_minishell.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+void	ft_pwd(t_pipe *pipe_value)
 {
-	char	*str_cat;	
-	int		str_size;
+	char	*output;
 
-	if (!s1 && !s2)
-		return (NULL);
-	str_size = ft_strlen(s1) + ft_strlen(s2) + 1;
-	str_cat = (char *)malloc(sizeof(char) * str_size);
-	if (!str_cat)
-		return (NULL);
-	ft_memcpy(str_cat, s1, ft_strlen(s1));
-	ft_memcpy(str_cat + ft_strlen(s1), s2, ft_strlen(s2));
-	str_cat[str_size - 1] = '\0';
-	return (str_cat);
+	g_exit_code = 0;
+	output = getcwd(NULL, 0);
+	output = ft_strjoin_infree(output, ft_strdup("\n"));
+	write(pipe_value->outfile_fd, output, ft_strlen(output));
+	free(output);
 }

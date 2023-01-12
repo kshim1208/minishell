@@ -6,12 +6,11 @@
 /*   By: kshim <kshim@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/03 16:07:29 by kshim             #+#    #+#             */
-/*   Updated: 2022/12/23 14:16:04 by kshim            ###   ########.fr       */
+/*   Updated: 2022/12/30 09:20:07 by kshim            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/ft_doubly_linked_list.h"
-#include <stdlib.h>
+#include "../../include/ft_minishell.h"
 
 t_detower	*ft_dequetower(void)
 {
